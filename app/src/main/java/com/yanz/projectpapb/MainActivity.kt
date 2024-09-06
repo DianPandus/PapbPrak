@@ -100,7 +100,6 @@ fun MyScreen() {
                 containerColor = Color.White,
                 contentColor = Color.Black
             ),
-            shape = RoundedCornerShape(24.dp) // Tombol bulat
         ) {
             Text("Submit", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
         }
