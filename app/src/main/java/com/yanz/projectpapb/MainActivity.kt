@@ -8,6 +8,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,10 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.yanz.projectpapb.ui.theme.ProjectPapbTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person // Import this icon
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.ui.draw.shadow
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +69,9 @@ fun MyScreen() {
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().background(Color.Gray)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Gray)
                     )
                     Text(
                         text = text2,
@@ -78,7 +79,9 @@ fun MyScreen() {
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().background(Color.Gray)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Gray)
                     )
                 }
             }
@@ -86,36 +89,54 @@ fun MyScreen() {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // TextField with Icon
-        OutlinedTextField(
-            value = inputText,
-            onValueChange = { inputText = it },
-            label = { Text("Enter Name", color = Color.Black, fontWeight = FontWeight.Bold) },
-            modifier = Modifier
-                .fillMaxWidth(),
-            textStyle = LocalTextStyle.current.copy(color = Color.Black),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            singleLine = true,
-            leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "User Icon") }, // Added icon
-        )
+        // TextField with Icon outside TextField
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                Icons.Filled.Person,
+                contentDescription = "User Icon",
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            OutlinedTextField(
+                value = inputText,
+                onValueChange = { inputText = it },
+                label = { Text("Enter Name", color = Color.Black, fontWeight = FontWeight.Bold) },
+                modifier = Modifier
+                    .weight(1f), // Use weight to take remaining space
+                textStyle = LocalTextStyle.current.copy(color = Color.Black),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                singleLine = true,
+            )
+        }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // TextField Number
-        OutlinedTextField(
-            value = inputText2,
-            onValueChange = { inputText2 = it },
-            label = { Text("Enter NIM", color = Color.Black,fontWeight = FontWeight.Bold) },
-            modifier = Modifier
-                .fillMaxWidth(),
-            textStyle = LocalTextStyle.current.copy(color = Color.Black),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            singleLine = true,
-            leadingIcon = { Icon(Icons.Filled.Phone, contentDescription = "Number Icon") }, // Added icon
-        )
+        // TextField Number with Icon outside TextField
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                Icons.Filled.Phone,
+                contentDescription = "Number Icon",
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            OutlinedTextField(
+                value = inputText2,
+                onValueChange = { inputText2 = it },
+                label = { Text("Enter NIM", color = Color.Black, fontWeight = FontWeight.Bold) },
+                modifier = Modifier
+                    .weight(1f),
+                textStyle = LocalTextStyle.current.copy(color = Color.Black),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+            )
+        }
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -135,14 +156,7 @@ fun MyScreen() {
             ),
         ) {
             Text("Submit", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ProjectPapbTheme {
-        MyScreen()
     }
-}
