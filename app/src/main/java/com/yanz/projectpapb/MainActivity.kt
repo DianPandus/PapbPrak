@@ -1,10 +1,14 @@
 package com.yanz.projectpapb
 
+import android.graphics.drawable.shapes.Shape
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,12 +20,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import com.yanz.projectpapb.ui.theme.ProjectPapbTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,6 +52,9 @@ fun MyScreen() {
     var inputText by remember { mutableStateOf("") }
     var inputText2 by remember { mutableStateOf("") }
     var isVisible by remember { mutableStateOf(false) }
+
+    // UI state to check if the form is valid
+    val isFormValid = inputText.isNotBlank() && inputText2.isNotBlank()
 
     Column(
         modifier = Modifier
@@ -104,7 +112,7 @@ fun MyScreen() {
                 onValueChange = { inputText = it },
                 label = { Text("Enter Name", color = Color.Black, fontWeight = FontWeight.Bold) },
                 modifier = Modifier
-                    .weight(1f), // Use weight to take remaining space
+                    .weight(1f),
                 textStyle = LocalTextStyle.current.copy(color = Color.Black),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                 singleLine = true,
@@ -140,7 +148,7 @@ fun MyScreen() {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Button Submit
+        // Button Submit with UI state handling and rounded corners
         Button(
             onClick = {
                 text = inputText
@@ -149,14 +157,19 @@ fun MyScreen() {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(48.dp)
+                .then(
+                    if (!isFormValid) Modifier.background(Color.Gray)
+                    else Modifier.background(Color.Magenta)
+                ),
+            enabled = isFormValid, // Disable button when form is invalid
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Gray,
+                containerColor = if (isFormValid) Color.Magenta else Color.Gray,
                 contentColor = Color.White
             ),
         ) {
-            Text("Submit", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
-
+            Text("Submit", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, color = Color.White)
         }
     }
-    }
+}
+
