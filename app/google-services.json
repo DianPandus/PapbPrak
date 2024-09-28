@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "539047072556",
+    "project_id": "papbprak",
+    "storage_bucket": "papbprak.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539047072556:android:4ab0a556419005421b9289",
+        "android_client_info": {
+          "package_name": "com.yanz.projectpapb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAj6cc1tK5jzD405otRgbObY9N_d_88N7g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

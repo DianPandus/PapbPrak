@@ -1,60 +1,55 @@
 package com.yanz.projectpapb
 
-import android.graphics.drawable.shapes.Shape
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import com.google.firebase.auth.FirebaseAuth
 import com.yanz.projectpapb.ui.theme.ProjectPapbTheme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
         setContent {
             ProjectPapbTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    MyScreen()
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    MainScreen(auth) { navigateToListActivity() }
                 }
             }
         }
     }
+
+    // Function to navigate to ListActivity
+    private fun navigateToListActivity() {
+        val intent = Intent(this, ListActivity::class.java)
+        startActivity(intent)
+    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyScreen() {
-    var text by remember { mutableStateOf("") }
-    var text2 by remember { mutableStateOf("") }
-    var inputText by remember { mutableStateOf("") }
-    var inputText2 by remember { mutableStateOf("") }
-    var isVisible by remember { mutableStateOf(false) }
+fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var loginMessage by remember { mutableStateOf("") }
 
-    // UI state to check if the form is valid
-    val isFormValid = inputText.isNotBlank() && inputText2.isNotBlank()
+    val isFormValid = email.isNotBlank() && password.isNotBlank()
 
     Column(
         modifier = Modifier
@@ -63,113 +58,73 @@ fun MyScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Output Text
-        AnimatedVisibility(visible = isVisible) {
-            Box(
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .padding(10.dp)
-            ) {
-                Column {
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.Gray)
-                    )
-                    Text(
-                        text = text2,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.Gray)
-                    )
-                }
-            }
-        }
+        // Email Input Field
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Enter Email") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            ),
+            singleLine = true
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // TextField with Icon outside TextField
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                Icons.Filled.Person,
-                contentDescription = "User Icon",
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            OutlinedTextField(
-                value = inputText,
-                onValueChange = { inputText = it },
-                label = { Text("Enter Name", color = Color.Black, fontWeight = FontWeight.Bold) },
-                modifier = Modifier
-                    .weight(1f),
-                textStyle = LocalTextStyle.current.copy(color = Color.Black),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                singleLine = true,
-            )
-        }
+        // Password Input Field
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Enter Password") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            singleLine = true
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // TextField Number with Icon outside TextField
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                Icons.Filled.Phone,
-                contentDescription = "Number Icon",
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            OutlinedTextField(
-                value = inputText2,
-                onValueChange = { inputText2 = it },
-                label = { Text("Enter NIM", color = Color.Black, fontWeight = FontWeight.Bold) },
-                modifier = Modifier
-                    .weight(1f),
-                textStyle = LocalTextStyle.current.copy(color = Color.Black),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done
-                ),
-                singleLine = true,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Button Submit with UI state handling and rounded corners
+        // Login Button
         Button(
             onClick = {
-                text = inputText
-                text2 = inputText2
-                isVisible = true
+                loginUser(auth, email, password) { success, message ->
+                    loginMessage = message
+                    if (success) {
+                        // Navigate to ListActivity on successful login
+                        onNavigateToList()
+                    }
+                }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .then(
-                    if (!isFormValid) Modifier.background(Color.Gray)
-                    else Modifier.background(Color.Magenta)
-                ),
-            enabled = isFormValid, // Disable button when form is invalid
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isFormValid) Color.Magenta else Color.Gray,
-                contentColor = Color.White
-            ),
+            modifier = Modifier.fillMaxWidth(),
+            enabled = isFormValid
         ) {
-            Text("Submit", textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, color = Color.White)
+            Text("Login")
         }
+
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // Display Login Message
+        Text(
+            text = loginMessage,
+            color = MaterialTheme.colorScheme.error,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
+// Function for user login
+fun loginUser(auth: FirebaseAuth, email: String, password: String, callback: (Boolean, String) -> Unit) {
+    auth.signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                callback(true, "Login successful!")
+            } else {
+                callback(false, "Login failed: ${task.exception?.message}")
+            }
+        }
+}
