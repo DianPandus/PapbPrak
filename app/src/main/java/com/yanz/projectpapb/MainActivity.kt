@@ -7,10 +7,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -58,11 +62,12 @@ fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Email Input Field
+        // Email Input Field with Icon
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Enter Email") },
+            leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email Icon") }, // Icon for email
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -73,11 +78,12 @@ fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Password Input Field
+        // Password Input Field with Icon
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Enter Password") },
+            leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Lock Icon") }, // Icon for password
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -104,7 +110,6 @@ fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
         ) {
             Text("Login")
         }
-
 
         Spacer(modifier = Modifier.height(10.dp))
 
