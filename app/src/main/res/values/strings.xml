@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ProjectPapb</string>
+    <string name="title_activity_github_profile">GithubProfileActivity</string>
 </resources>

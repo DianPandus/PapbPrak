@@ -1,5 +1,6 @@
 package com.yanz.projectpapb
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -10,16 +11,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.yanz.projectpapb.ui.theme.ProjectPapbTheme
-
 
 data class Course(
     val hari: String = "",
@@ -58,6 +59,24 @@ class ListActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text("Logout")
+                        }
+
+                        // Floating Action Button untuk Profil GitHub
+                        FloatingActionButton(
+                            onClick = {
+                                val intent = Intent(this@ListActivity, GithubProfileActivity::class.java)
+                                startActivity(intent)
+                            },
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .padding(16.dp)
+                        ) {
+                            // Menggunakan gambar yang sudah di-download dari drawable
+                            Icon(
+                                painter = painterResource(id = R.drawable.icon), // Ganti dengan nama file gambar yang kamu simpan
+                                contentDescription = "GitHub Profile",
+                                modifier = Modifier.size(24.dp) // Sesuaikan ukuran jika diperlukan
+                            )
                         }
                     }
                 }
