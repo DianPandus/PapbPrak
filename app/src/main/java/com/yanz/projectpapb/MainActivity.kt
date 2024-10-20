@@ -14,11 +14,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.yanz.projectpapb.ui.theme.ProjectPapbTheme
 
@@ -34,7 +33,22 @@ class MainActivity : ComponentActivity() {
         setContent {
             ProjectPapbTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    MainScreen(auth) { navigateToListActivity() }
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        MainScreen(auth) { navigateToListActivity() }
+
+                        // Bottom Navigation Bar
+                        BottomNavigationBar(
+                            onProfileClick = {
+                                val intent = Intent(this@MainActivity, GithubProfileActivity::class.java)
+                                startActivity(intent)
+                            },
+                            onTasksClick = {
+                                // Navigate back to ListActivity
+                                val intent = Intent(this@MainActivity, ListActivity::class.java)
+                                startActivity(intent)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -47,6 +61,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
     var email by remember { mutableStateOf("") }
@@ -62,12 +77,11 @@ fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Email Input Field with Icon
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Enter Email") },
-            leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email Icon") }, // Icon for email
+            leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email Icon") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -78,12 +92,11 @@ fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Password Input Field with Icon
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Enter Password") },
-            leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Lock Icon") }, // Icon for password
+            leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Lock Icon") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -94,13 +107,11 @@ fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Login Button
         Button(
             onClick = {
                 loginUser(auth, email, password) { success, message ->
                     loginMessage = message
                     if (success) {
-                        // Navigate to ListActivity on successful login
                         onNavigateToList()
                     }
                 }
@@ -113,7 +124,6 @@ fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Display Login Message
         Text(
             text = loginMessage,
             color = MaterialTheme.colorScheme.error,

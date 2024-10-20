@@ -1,5 +1,6 @@
 package com.yanz.projectpapb
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,11 +22,35 @@ class GithubProfileActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ProjectPapbTheme {
+                // Make sure the whole screen is filled, including the bottom bar
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    GithubProfileScreen()
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.SpaceBetween, // Ensures items are spaced correctly
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // Profile screen content
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            GithubProfileScreen()
+                        }
+
+                        // Bottom Navigation Bar
+                        BottomNavigationBar(
+                            onProfileClick = {},
+                            onTasksClick = {
+                                // Navigate back to ListActivity
+                                val intent = Intent(this@GithubProfileActivity, ListActivity::class.java)
+                                startActivity(intent)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -40,7 +65,6 @@ fun GithubProfileScreen() {
 
     val scope = rememberCoroutineScope()
 
-    // Fetch data from GitHub API using Retrofit
     LaunchedEffect(Unit) {
         scope.launch {
             val apiService = GithubApiService.create()
@@ -54,7 +78,6 @@ fun GithubProfileScreen() {
         }
     }
 
-    // Tampilkan UI sesuai dengan status loading atau error
     if (isLoading) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -73,12 +96,11 @@ fun GithubProfileScreen() {
     } else if (profile != null) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Gambar Profil
             val imagePainter = rememberAsyncImagePainter(model = profile!!.avatar_url)
             Image(
                 painter = imagePainter,
@@ -91,22 +113,18 @@ fun GithubProfileScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Username
             Text(text = "Username: ${profile!!.login}", style = MaterialTheme.typography.headlineMedium, textAlign = TextAlign.Center)
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Nama
             Text(text = "Name: ${profile!!.name ?: "Unknown"}", style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Followers
             Text(text = "Followers: ${profile!!.followers}", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Following
             Text(text = "Following: ${profile!!.following}", style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
         }
     }

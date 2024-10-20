@@ -10,8 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -21,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.yanz.projectpapb.ui.theme.ProjectPapbTheme
+import com.yanz.projectpapb.R
 
 data class Course(
     val hari: String = "",
@@ -42,18 +41,25 @@ class ListActivity : ComponentActivity() {
             ProjectPapbTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         CourseList(database)
 
-                        // Tombol Logout
                         Button(
                             onClick = {
+                                // Call the logout function and handle navigation
                                 logoutUser(auth) { message ->
-                                    // Tampilkan pesan logout
                                     Toast.makeText(this@ListActivity, message, Toast.LENGTH_SHORT).show()
-                                    finish() // Kembali ke MainActivity
+
+                                    // Navigate to MainActivity (Login Screen) after logout
+                                    val intent = Intent(this@ListActivity, MainActivity::class.java)
+                                    startActivity(intent)
+
+                                    // Finish the current activity to prevent going back
+                                    finish()
                                 }
                             },
                             modifier = Modifier.fillMaxWidth()
@@ -61,23 +67,19 @@ class ListActivity : ComponentActivity() {
                             Text("Logout")
                         }
 
-                        // Floating Action Button untuk Profil GitHub
-                        FloatingActionButton(
-                            onClick = {
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        BottomNavigationBar(
+                            onProfileClick = {
                                 val intent = Intent(this@ListActivity, GithubProfileActivity::class.java)
                                 startActivity(intent)
                             },
-                            modifier = Modifier
-                                .align(Alignment.End)
-                                .padding(16.dp)
-                        ) {
-                            // Menggunakan gambar yang sudah di-download dari drawable
-                            Icon(
-                                painter = painterResource(id = R.drawable.icon), // Ganti dengan nama file gambar yang kamu simpan
-                                contentDescription = "GitHub Profile",
-                                modifier = Modifier.size(24.dp) // Sesuaikan ukuran jika diperlukan
-                            )
-                        }
+                            onTasksClick = {
+                                // Navigate back to ListActivity
+                                val intent = Intent(this@ListActivity, ListActivity::class.java)
+                                startActivity(intent)
+                            }
+                        )
                     }
                 }
             }
@@ -85,7 +87,7 @@ class ListActivity : ComponentActivity() {
     }
 }
 
-// Fungsi untuk logout
+// Function for logging out
 fun logoutUser(auth: FirebaseAuth, callback: (String) -> Unit) {
     auth.signOut()
     callback("Logged out successfully!")
@@ -95,7 +97,6 @@ fun logoutUser(auth: FirebaseAuth, callback: (String) -> Unit) {
 fun CourseList(database: FirebaseDatabase) {
     var courses by remember { mutableStateOf(listOf<Course>()) }
 
-    // Fetch data from Realtime Database
     LaunchedEffect(Unit) {
         val coursesRef = database.getReference("courses")
         coursesRef.addValueEventListener(object : ValueEventListener {
@@ -116,7 +117,6 @@ fun CourseList(database: FirebaseDatabase) {
         })
     }
 
-    // Display the list of course cards
     if (courses.isEmpty()) {
         Text("No courses available", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
     } else {
@@ -149,19 +149,19 @@ fun CourseCard(hari: String, mataKuliah: String, jam: String) {
                 text = hari,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = mataKuliah,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.DarkGray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = jam,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.DarkGray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
