@@ -12,11 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectPapb"
         tools:targetApi="31">
+
         <activity
             android:name="com.yanz.projectpapb.GithubProfileActivity"
             android:exported="false"
             android:label="@string/title_activity_github_profile"
             android:theme="@style/Theme.ProjectPapb" />
+
         <!-- MainActivity declaration -->
         <activity
             android:name="com.yanz.projectpapb.MainActivity"
@@ -25,11 +27,16 @@
             android:theme="@style/Theme.ProjectPapb">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- ListActivity declaration -->
+        </activity>
+
+        <!-- ListActivity declaration -->
         <activity android:name="com.yanz.projectpapb.ListActivity" />
+
+        <!-- TugasScreen declaration -->
+        <activity android:name="com.yanz.projectpapb.TugasScreen" />
     </application>
+
 
 </manifest>

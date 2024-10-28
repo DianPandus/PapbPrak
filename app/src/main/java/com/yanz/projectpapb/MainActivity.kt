@@ -77,33 +77,57 @@ fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Enter Email") },
-            leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email Icon") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
-            ),
-            singleLine = true
-        )
+        // Email Field
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Email,
+                contentDescription = "Email Icon",
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Enter Email") },
+                modifier = Modifier.weight(1f), // Make TextField fill the remaining space
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
+                singleLine = true
+            )
+        }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Enter Password") },
-            leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Lock Icon") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
-            ),
-            singleLine = true
-        )
+        // Password Field
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Lock,
+                contentDescription = "Lock Icon",
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Enter Password") },
+                modifier = Modifier.weight(1f), // Make TextField fill the remaining space
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true
+            )
+        }
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -131,6 +155,7 @@ fun MainScreen(auth: FirebaseAuth, onNavigateToList: () -> Unit) {
         )
     }
 }
+
 
 // Function for user login
 fun loginUser(auth: FirebaseAuth, email: String, password: String, callback: (Boolean, String) -> Unit) {

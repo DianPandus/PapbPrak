@@ -1,6 +1,7 @@
 package com.yanz.projectpapb
 
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -42,7 +43,10 @@ fun BottomNavigationBar(onProfileClick: () -> Unit, onTasksClick: () -> Unit) {
             },
             label = { Text("Tasks") },
             selected = false,
-            onClick = onTasksClick
+            onClick = {
+                // Memanggil fungsi yang diberikan untuk menangani navigasi ke TugasScreen
+                onTasksClick()
+            }
         )
         NavigationBarItem(
             icon = {

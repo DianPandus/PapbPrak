@@ -75,11 +75,11 @@ class ListActivity : ComponentActivity() {
                                 startActivity(intent)
                             },
                             onTasksClick = {
-                                // Navigate back to ListActivity
-                                val intent = Intent(this@ListActivity, ListActivity::class.java)
+                                val intent = Intent(this@ListActivity, TugasScreen::class.java)
                                 startActivity(intent)
                             }
                         )
+
                     }
                 }
             }
