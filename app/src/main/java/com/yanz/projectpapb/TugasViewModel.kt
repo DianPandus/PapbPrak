@@ -8,28 +8,36 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.mutableStateOf
+import androidx.activity.compose.rememberLauncherForActivityResult
 
 class TugasViewModel(private val dao: TugasDao) : ViewModel() {
-    // Menggunakan StateFlow untuk mengamati data dari database
+    var namaMatkul = mutableStateOf("")
+    var detailTugas = mutableStateOf("")
+
+    // StateFlow to observe data from the database
     val tugasList: StateFlow<List<Tugas>> = flow {
         dao.getAllTugas().collect { emit(it) }
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    // Fungsi untuk menambahkan tugas baru ke database
-    fun addTugas(namaMatkul: String, detailTugas: String) {
+    // Function to add a new task with an image URI
+    fun addTugas(namaMatkul: String, detailTugas: String, imageUri: String?) {
         viewModelScope.launch {
-            dao.insertTugas(Tugas(namaMatkul = namaMatkul, detailTugas = detailTugas))
+            val tugas = Tugas(namaMatkul = namaMatkul, detailTugas = detailTugas, imageUri = imageUri)
+            dao.insertTugas(tugas)
         }
     }
 
-    // Fungsi untuk mengubah status isDone dari tugas
+    // Function to toggle task status
     fun toggleTugasStatus(tugas: Tugas) {
         viewModelScope.launch {
             val updatedTugas = tugas.copy(isDone = !tugas.isDone)
-            dao.insertTugas(updatedTugas) // Perbarui tugas di database
+            dao.insertTugas(updatedTugas)
         }
     }
 }
+
+
 
 // Factory untuk membuat instance TugasViewModel dengan parameter dao
 class TugasViewModelFactory(private val dao: TugasDao) : ViewModelProvider.Factory {

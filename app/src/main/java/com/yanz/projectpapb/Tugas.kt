@@ -8,6 +8,7 @@ data class Tugas(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val namaMatkul: String,
     val detailTugas: String,
-    val isDone: Boolean = false // Properti baru untuk status selesai
+    val imageUri: String? = null, // Add this line to store the image URI
+    val isDone: Boolean = false // Property for the completion status
 )
 

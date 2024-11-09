@@ -2,7 +2,6 @@ package com.yanz.projectpapb
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
@@ -27,10 +26,12 @@ fun BottomNavigationBar(onProfileClick: () -> Unit, onTasksClick: () -> Unit) {
                     modifier = Modifier.size(24.dp)
                 )
             },
-            label = { Text("Search") },
+            label = { Text("Schedule") },
             selected = false,
             onClick = {
-                Toast.makeText(context, "Search ditekan", Toast.LENGTH_SHORT).show()
+                // Navigate to ListActivity when "Search" is clicked
+                val intent = Intent(context, ListActivity::class.java)
+                context.startActivity(intent)
             }
         )
         NavigationBarItem(
@@ -43,10 +44,7 @@ fun BottomNavigationBar(onProfileClick: () -> Unit, onTasksClick: () -> Unit) {
             },
             label = { Text("Tasks") },
             selected = false,
-            onClick = {
-                // Memanggil fungsi yang diberikan untuk menangani navigasi ke TugasScreen
-                onTasksClick()
-            }
+            onClick = onTasksClick
         )
         NavigationBarItem(
             icon = {
